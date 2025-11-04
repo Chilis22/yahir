@@ -21,7 +21,7 @@ const FocusModeScreen: React.FC<FocusModeScreenProps> = ({ onClose }) => {
             interval = setInterval(() => {
                 setTimeRemaining(t => t - 1);
             }, 1000);
-        } else if (timeRemaining === 0) {
+        } else if (isActive && timeRemaining === 0) {
             // Timer finished, complete the mission
             const focusMission = appState.missionPlan?.missions.find(
                 m => m.verificationType === 'focus_mode' && !m.completed
@@ -49,7 +49,7 @@ const FocusModeScreen: React.FC<FocusModeScreenProps> = ({ onClose }) => {
     return (
         <div className="fixed inset-0 bg-slate-900/90 z-50 flex flex-col items-center justify-center p-4 text-white animate-fade-in backdrop-blur-sm">
             <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white">
-                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>

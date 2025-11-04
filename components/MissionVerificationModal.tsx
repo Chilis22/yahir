@@ -19,7 +19,7 @@ const MissionVerificationModal: React.FC<MissionVerificationModalProps> = ({ mis
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fade-in">
             <div className="bg-white w-full max-w-sm rounded-2xl shadow-xl p-6 text-center relative">
                 <button onClick={onClose} className="absolute top-2 right-2 text-slate-400 hover:text-slate-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -42,7 +42,7 @@ const MissionVerificationModal: React.FC<MissionVerificationModalProps> = ({ mis
                             onClick={handleManualComplete}
                             className="w-full py-3 px-4 bg-sky-600 hover:bg-sky-700 rounded-lg text-white font-semibold transition-colors"
                         >
-                            Marcar como completado (Solo XP)
+                            Marcar como completado
                         </button>
                     </>
                 )}
