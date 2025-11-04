@@ -68,15 +68,15 @@ const missionPlanSchema = {
           level: { type: Type.INTEGER, description: "El número del nivel, comenzando desde 1." },
           title: { type: Type.STRING, description: "Un título de misión corto y accionable para la tarea." },
           description: { type: Type.STRING, description: "Una descripción de 1 frase de la misión." },
-          completed: { type: Type.BOOLEAN, description: "Siempre debe ser `false`." },
+          completed: { type: Type.BOOLEAN, description: "Siempre debe ser `false` inicialmente." },
           verificationType: { 
             type: Type.STRING, 
-            description: "El método de verificación. 'manual' para tareas simples. 'focus_mode' para tareas de estudio/concentración." 
+            description: "El método de verificación. Usa 'manual' para tareas simples (ej. 'Ordenar apuntes'). Usa 'focus_mode' para tareas de estudio/concentración (ej. 'Estudiar 1h')." 
           },
-          rewardXP: { type: Type.INTEGER, description: "Puntos de experiencia ganados, ej. 50 o 100." },
-          rewardCoins: { type: Type.INTEGER, description: "Monedas ganadas, ej. 10 o 20. Las misiones 'manual' deben dar 0 monedas." }
+          rewardXP: { type: Type.INTEGER, description: "Puntos de experiencia ganados por la misión, ej. 50 o 100." },
+          rewardCoins: { type: Type.INTEGER, description: "Monedas ganadas. IMPORTANTE: Las misiones 'manual' deben dar 0 monedas para evitar fraudes." }
         },
-        required: ["level", "title", "description", "completed", "verificationType", "rewardXP", "rewardCoins"]
+        required: ["level", "title", "completed", "verificationType", "rewardXP", "rewardCoins", "description"]
       }
     }
   },

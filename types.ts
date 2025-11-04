@@ -11,7 +11,7 @@ export interface Message {
     options?: { label: string; value: string }[];
 }
 
-export type VerificationType = 'manual' | 'focus_mode';
+export type VerificationType = 'manual' | 'focus_mode' | 'api' | 'social';
 
 export interface Mission {
     level: number;
