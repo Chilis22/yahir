@@ -8,7 +8,7 @@ const conversationalModel = 'gemini-2.5-flash';
 const jsonModel = 'gemini-2.5-flash';
 
 const conversationalSystemInstruction = "Eres Wyz, un Director de Juego personal, amigable y motivador. Tu objetivo es guiar al usuario a través de una configuración inicial para gamificar sus metas. Sigue este flujo: 1. Pregunta su nombre. 2. Después de que respondan, salúdalos por su nombre y pregúntales sobre su objetivo principal. 3. Una vez que especifiquen su objetivo, haz preguntas de sondeo para entenderlo mejor, puedes pedirles que adjunten documentos o imágenes si ayuda. 4. Cuando sientas que tienes suficiente información, di exactamente la frase: 'Perfecto. He diseñado un plan de misiones inicial para ti. ¿Listo para empezar?' y nada más. Sé conciso y mantén un tono de aventura. No uses markdown.";
-const generalChatSystemInstruction = "Eres Wyz, un Director de Juego personal y el asesor IA de la app WYD. Tu tono es motivador y amigable. Ya conoces al usuario (te dirán su nombre) y su plan de misiones. Tu objetivo es ayudarles a ajustar su plan, darles consejos de productividad y motivarlos a completar sus misiones. Si te piden añadir una nueva meta, ayúdales a definirla. Refiérete a sus tareas como 'misiones' y a sus metas como 'aventuras'.";
+const generalChatSystemInstruction = "Eres Wyz, un Director de Juego personal y el asesor IA de la app WYD. Tu tono es motivador y amigable. Ya conoces al usuario (te dirán su nombre) y su plan de misiones actual. Tu objetivo es ayudarles a ajustar su plan, darles consejos de productividad ('tips'), motivarlos a completar sus 'misiones', o añadir nuevas metas si te lo piden. Sé conciso y mantén el tono de aventura.";
 
 
 const mapMessagesToGeminiContent = (messages: Message[]): Content[] => {
@@ -122,12 +122,21 @@ export const generateMissionPlan = async (history: Message[]): Promise<MissionPl
     }
 };
 
+/**
+ * NUEVA: Función para crear una sesión de chat CON CONTEXTO.
+ * Esta es para el chatbot principal (botón flotante).
+ */
 export const createGeneralChatSession = (appState: AppState, history: Message[]): Chat => {
+    
+    // Creamos un historial inicial rico para que la IA sepa quién es el usuario.
     const startupHistory: Content[] = [
-        ...mapMessagesToGeminiContent(history),
+        ...mapMessagesToGeminiContent(history), // Historial previo (si lo hay)
         {
+            // Mensaje de sistema secreto para darle contexto a la IA
             role: 'model',
-            parts: [{ text: `(Contexto del sistema: El nombre del usuario es ${appState.userName}. Su plan de misiones actual es: ${JSON.stringify(appState.missionPlan)}. No menciones este contexto a menos que sea relevante para su pregunta.)` }]
+            parts: [{ 
+                text: `(Contexto del sistema: El nombre del usuario es ${appState.userName || 'Aventurero'}. Su plan de misiones actual es: ${JSON.stringify(appState.missionPlan)}. No le menciones este contexto directamente, solo úsalo para responder a sus preguntas de forma personalizada.)` 
+            }]
         }
     ];
 
@@ -136,6 +145,6 @@ export const createGeneralChatSession = (appState: AppState, history: Message[])
         config: {
             systemInstruction: generalChatSystemInstruction,
         },
-        history: startupHistory
+        history: startupHistory // Inyectamos el contexto aquí
     });
 };

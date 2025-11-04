@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AiIcon, SendIcon } from '../constants';
-import { createGeneralChatSession } from '../services/geminiService';
+// CAMBIADO: Importar de geminiService
+import { createGeneralChatSession } from '../services/geminiService'; 
 import type { Message } from '../types';
 import type { Chat } from '@google/genai';
-import { useAppContext } from '../App';
-
+import { useAppContext } from '../App'; // NUEVO: Importar el contexto de la app
 
 interface ChatbotProps {
     onClose: () => void;
 }
 
 const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
-    const { appState } = useAppContext();
+    const { appState } = useAppContext(); // NUEVO: Obtener el estado global
+
     const [messages, setMessages] = useState<Message[]>([
+        // NUEVO: Saludo personalizado
         { sender: 'ai', text: `Hola ${appState.userName || 'Aventurero'}, ¿en qué te puedo ayudar hoy con tu aventura?` }
     ]);
     const [inputValue, setInputValue] = useState('');
@@ -21,9 +23,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
     const chatEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // Initialize the chat session with context
+        // CAMBIADO: Inicializar el chat CON CONTEXTO
+        // Le pasamos el estado actual de la app y un historial vacío.
         setChat(createGeneralChatSession(appState, []));
-    }, [appState]);
+    }, [appState]); // Se inicializa con el estado actual
 
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -39,6 +42,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
         setIsLoading(true);
 
         try {
+            // La lógica de envío de mensajes ahora funciona con el chat contextualizado
+            // FIX: The `sendMessage` method expects an object with a `message` property.
             const response = await chat.sendMessage({ message: currentInput });
             const responseText = response.text;
             const aiMessage: Message = { sender: 'ai', text: responseText };
@@ -53,13 +58,16 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
     };
 
     return (
+        // El JSX del return (el diseño de la ventana del chat) es perfecto.
+        // No es necesario cambiar nada en el return.
         <div className="fixed inset-0 bg-black/40 z-50 flex items-end justify-center animate-fade-in">
+            {/* ... (todo el JSX existente se mantiene igual) ... */}
             <div className="bg-white w-full max-w-lg h-[90vh] rounded-t-2xl flex flex-col shadow-2xl border border-slate-200">
                 {/* Header */}
                 <header className="flex items-center justify-between p-4 border-b border-slate-200 flex-shrink-0">
                     <div className="flex items-center space-x-2">
                         <AiIcon className="w-6 h-6 text-sky-500" />
-                        <h2 className="text-lg font-bold text-slate-900">Asistente IA</h2>
+                        <h2 className="text-lg font-bold text-slate-900">Asistente IA (Wyz)</h2>
                     </div>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-800 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24" stroke="currentColor">
@@ -104,7 +112,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
                             type="text"
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
-                            placeholder="Pregúntale algo a la IA..."
+                            placeholder="Pregúntale algo a Wyz..."
                             disabled={isLoading}
                             className="w-full px-4 py-3 rounded-lg bg-slate-100 border border-slate-300 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50"
                         />
