@@ -1,24 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppContext } from '../../App';
+import type { Mission } from '../../types';
+import MissionVerificationModal from '../MissionVerificationModal';
 
 const MissionsScreen = () => {
-    const { appState, setAppState } = useAppContext();
+    const { appState } = useAppContext();
     const { missionPlan } = appState;
+    const [selectedMission, setSelectedMission] = useState<Mission | null>(null);
 
     if (!missionPlan) {
         return <div className="text-center text-slate-500">No hay misiones disponibles.</div>;
     }
-
-    const toggleMission = (level: number) => {
-        if (!missionPlan) return;
-        const updatedMissions = missionPlan.missions.map(m => 
-            m.level === level ? { ...m, completed: !m.completed } : m
-        );
-        setAppState(prev => ({
-            ...prev,
-            missionPlan: { ...missionPlan, missions: updatedMissions }
-        }));
-    };
 
     return (
         <div className="space-y-4">
@@ -27,8 +19,8 @@ const MissionsScreen = () => {
                 {missionPlan.missions.map(mission => (
                     <div 
                         key={mission.level} 
-                        onClick={() => toggleMission(mission.level)}
-                        className="flex items-center p-3 bg-slate-100 rounded-lg cursor-pointer hover:bg-slate-200 transition-colors"
+                        onClick={() => !mission.completed && setSelectedMission(mission)}
+                        className={`flex items-center p-3 bg-slate-100 rounded-lg transition-colors ${!mission.completed ? 'cursor-pointer hover:bg-slate-200' : 'opacity-60'}`}
                     >
                         <div className={`w-6 h-6 rounded-full flex-shrink-0 mr-4 flex items-center justify-center text-white font-bold ${mission.completed ? 'bg-green-500' : 'border-2 border-slate-400'}`}>
                             {mission.completed && '✓'}
@@ -39,7 +31,14 @@ const MissionsScreen = () => {
                     </div>
                 ))}
             </div>
-             <p className="text-xs text-center text-slate-500">Toca una misión para marcarla como completada.</p>
+             <p className="text-xs text-center text-slate-500">Toca una misión para ver los detalles de finalización.</p>
+             
+            {selectedMission && (
+                <MissionVerificationModal
+                    mission={selectedMission}
+                    onClose={() => setSelectedMission(null)}
+                />
+            )}
         </div>
     );
 };

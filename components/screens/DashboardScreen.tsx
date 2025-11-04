@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { useAppContext } from '../../App';
+
+const FocusModeScreen = lazy(() => import('./FocusModeScreen'));
 
 const MapLevel: React.FC<{ level: number, mission: string, isCurrent: boolean, isCompleted: boolean }> = ({ level, mission, isCurrent, isCompleted }) => {
     const statusClasses = isCurrent 
@@ -28,6 +30,7 @@ const PathSegment = () => (
 const DashboardScreen = () => {
     const { appState } = useAppContext();
     const { missionPlan } = appState;
+    const [isFocusModeOpen, setIsFocusModeOpen] = useState(false);
 
     if (!missionPlan) {
         return (
@@ -62,11 +65,18 @@ const DashboardScreen = () => {
                  </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 text-center">
-                <button className="bg-sky-100 text-sky-700 p-3 rounded-lg text-sm font-semibold">Modo Enfoque</button>
-                <button className="bg-yellow-100 text-yellow-700 p-3 rounded-lg text-sm font-semibold">Tienda</button>
-                <button className="bg-green-100 text-green-700 p-3 rounded-lg text-sm font-semibold">Recompensas</button>
+            <div className="text-center">
+                <button 
+                    onClick={() => setIsFocusModeOpen(true)}
+                    className="bg-sky-100 text-sky-800 p-3 rounded-lg text-sm font-semibold w-full hover:bg-sky-200 transition-colors"
+                >
+                    Modo Enfoque
+                </button>
             </div>
+            
+            <Suspense fallback={<div className="text-center p-4">Cargando Modo Enfoque...</div>}>
+                {isFocusModeOpen && <FocusModeScreen onClose={() => setIsFocusModeOpen(false)} />}
+            </Suspense>
         </div>
     );
 };

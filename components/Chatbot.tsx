@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AiIcon, SendIcon } from '../constants';
-import { createChatSession } from '../services/chatService';
+import { createGeneralChatSession } from '../services/geminiService';
 import type { Message } from '../types';
 import type { Chat } from '@google/genai';
+import { useAppContext } from '../App';
 
 
 interface ChatbotProps {
@@ -10,8 +11,9 @@ interface ChatbotProps {
 }
 
 const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
+    const { appState } = useAppContext();
     const [messages, setMessages] = useState<Message[]>([
-        { sender: 'ai', text: 'Hola, ¿en qué puedo ayudarte hoy?' }
+        { sender: 'ai', text: `Hola ${appState.userName || 'Aventurero'}, ¿en qué te puedo ayudar hoy con tu aventura?` }
     ]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -19,9 +21,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
     const chatEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // Initialize the chat session when the component mounts
-        setChat(createChatSession());
-    }, []);
+        // Initialize the chat session with context
+        setChat(createGeneralChatSession(appState, []));
+    }, [appState]);
 
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });

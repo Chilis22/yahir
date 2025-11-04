@@ -11,11 +11,18 @@ export interface Message {
     options?: { label: string; value: string }[];
 }
 
+export type VerificationType = 'manual' | 'focus_mode';
+
 export interface Mission {
     level: number;
     title: string;
     completed: boolean;
+    description?: string;
+    verificationType: VerificationType;
+    rewardXP: number;
+    rewardCoins: number;
 }
+
 
 export interface MissionPlan {
     title: string;
@@ -23,9 +30,22 @@ export interface MissionPlan {
     missions: Mission[];
 }
 
+export interface Post {
+    id: number;
+    user: string;
+    action: string;
+    icon: React.ReactNode;
+}
+
+
 export type Screen = 'dashboard' | 'missions' | 'community' | 'profile';
 
 export interface AppState {
     userName: string | null;
     missionPlan: MissionPlan | null;
+    level: number;
+    xp: number;
+    xpToNextLevel: number;
+    coins: number;
+    posts: Post[];
 }
